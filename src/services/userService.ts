@@ -20,7 +20,7 @@ const userService = () => {
         throw new createHttpError.BadRequest(valid.toString());
       }
 
-      //cheking if user already exists
+      //checking if user already exists
       const userExists: User | undefined = await userRepository
         .createQueryBuilder()
         .where("user.username = :username", { username: user.username })
@@ -62,7 +62,7 @@ const userService = () => {
         username: user.username,
       });
 
-      //cheking if user exists
+      //checking if user exists
       if (!userExists) {
         throw new createHttpError.NotFound("User does not Exist");
       }
