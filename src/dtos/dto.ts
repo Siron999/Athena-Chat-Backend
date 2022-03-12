@@ -5,7 +5,7 @@ export interface RegisterDto {
   username: string;
   email: string;
   fullName: string;
-  mobileNumber: number;
+  mobileNumber: string;
   password: string;
 }
 
@@ -14,7 +14,8 @@ export interface CurrentUserDto {
   username: string;
   email: string;
   fullName: string;
-  mobileNumber: number;
+  mobileNumber: string;
+  activated:boolean;
   token?: string;
 }
 

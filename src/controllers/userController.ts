@@ -29,6 +29,15 @@ const userController = () => {
         .status(200)
         .send(await userService().getCurrentUser(req.user.username));
     },
+
+    confirmToken: async (
+      req: CustomRequest,
+      res: Response,
+      next: NextFunction
+    ): Promise<Response<CurrentUserDto>> => {
+      const token: string = req.query.token as string;
+      return res.status(200).send(await userService().confirmToken(token));
+    },
   };
 };
 

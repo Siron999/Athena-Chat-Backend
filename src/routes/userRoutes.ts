@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post("/register", globalTryCatch(userController().register));
 router.post("/login", globalTryCatch(userController().login));
+router.get("/confirm", globalTryCatch(userController().confirmToken));
 router.get(
   "/current-user",
   globalTryCatch(authAguard),

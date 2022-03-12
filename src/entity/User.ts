@@ -6,6 +6,8 @@ import {
   IsString,
   IsNotEmpty,
   ValidationError,
+  IsDefined,
+  isNotEmpty,
 } from "class-validator";
 
 @Entity()
@@ -29,9 +31,11 @@ export class User {
   fullName: string;
 
   @IsNotEmpty({ message: "Field Required" })
-  @IsInt({ message: "Invalid Mobile Number" })
   @Column()
-  mobileNumber: number;
+  mobileNumber: string;
+
+  @Column()
+  activated: boolean = false;
 
   @IsNotEmpty({ message: "Field Required" })
   @IsString({ message: "Invalid Password" })
