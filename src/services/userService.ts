@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../entity/User";
 import { getRepository } from "typeorm";
-import { CurrentUserDto, RegisterDto, LoginDto } from "../dtos/dto";
+import { CurrentUserDto, RegisterDto, LoginDto, TokenDto } from "../dtos/dto";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
 import log from "../utils/logger";
@@ -10,13 +10,12 @@ import createHttpError from "http-errors";
 import emailService from "./emailService";
 import { ConfirmationToken } from "../entity/ConfirmationToken";
 import { v4 as uuidv4 } from "uuid";
-import { Logform } from "winston";
 
 const userService = () => {
   const userRepository = getRepository(User);
   const tokenRepository = getRepository(ConfirmationToken);
   return {
-    register: async function (user: RegisterDto): Promise<CurrentUserDto> {
+    register: async function (user: RegisterDto): Promise<TokenDto> {
       //checking if it contains numbers and dash only
       if (!/^[-0-9]{10,15}$/.test(user.mobileNumber))
         throw new createHttpError.BadRequest("Not a valid mobile number");
@@ -64,17 +63,11 @@ const userService = () => {
       await emailService().sendMail(savedUser.email, confirmationLink);
 
       return {
-        id: savedUser.id,
-        username: savedUser.username,
-        fullName: savedUser.fullName,
-        email: savedUser.email,
-        mobileNumber: savedUser.mobileNumber,
-        activated: savedUser.activated,
         token,
       };
     },
 
-    login: async function (user: LoginDto): Promise<CurrentUserDto> {
+    login: async function (user: LoginDto): Promise<TokenDto> {
       const userExists: User | undefined = await this.findByUsername(
         user.username
       );
@@ -96,12 +89,6 @@ const userService = () => {
       log.info(`User with username ${userExists.username} logged in`);
 
       return {
-        id: userExists.id,
-        username: userExists.username,
-        fullName: userExists.fullName,
-        email: userExists.email,
-        mobileNumber: userExists.mobileNumber,
-        activated: userExists.activated,
         token,
       };
     },
@@ -165,7 +152,7 @@ const userService = () => {
 
       log.info("Confirmation token created");
 
-      return `${process.env.HOST}/api/user/confirm?token=${token}`;
+      return `${process.env.NEXT_API}/verify/${token}`;
     },
 
     enableUser: async function (userId: string): Promise<void> {

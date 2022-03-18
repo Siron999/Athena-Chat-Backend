@@ -15,8 +15,11 @@ export interface CurrentUserDto {
   email: string;
   fullName: string;
   mobileNumber: string;
-  activated:boolean;
-  token?: string;
+  activated: boolean;
+}
+
+export interface TokenDto {
+  token: string;
 }
 
 export interface LoginDto {
